@@ -1,4 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class User {
@@ -12,9 +13,11 @@ export class User {
   public name: string;
 
   @Column()
+  @Exclude()
   public password: string;
 
   // TODO: Implement one-to-many relation between User table and a specific refresh token table
   @Column()
+  @Exclude()
   public refreshToken: string;
 }
