@@ -22,12 +22,12 @@ export class UsersService {
     return await this.usersRepository.find();
   }
 
-  async findOneById(id: number): Promise<User> {
-    return await this.usersRepository.findOneOrFail({ where: { id: id } });
+  async findOneById(id: number): Promise<User | null> {
+    return await this.usersRepository.findOne({ where: { id: id } });
   }
 
-  async findOneByUsername(username: string): Promise<User> {
-    return await this.usersRepository.findOneOrFail({
+  async findOneByUsername(username: string): Promise<User | null> {
+    return await this.usersRepository.findOne({
       where: { name: username },
     });
   }
