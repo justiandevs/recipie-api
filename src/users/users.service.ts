@@ -38,7 +38,7 @@ export class UsersService {
     });
   }
 
-  remove(id: number) {
-    // TODO: Make remove action
+  async remove(id: number) {
+    return await this.usersRepository.delete({ id });
   }
 }
