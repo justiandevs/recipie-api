@@ -33,7 +33,11 @@ export class AuthService {
 
     const tokens = await this.getTokens(newUser.id!, newUser.name);
     await this.updateRefreshToken(newUser.id!, tokens.refreshToken);
-    return tokens;
+    return {
+      ...newUser,
+      ...tokens,
+      password: undefined,
+    };
   }
 
   async signIn(authDto: AuthDto) {
@@ -47,7 +51,11 @@ export class AuthService {
       throw new BadRequestException('Credentials are invalid');
     const tokens = await this.getTokens(user.id!, user.name);
     await this.updateRefreshToken(user.id!, tokens.refreshToken);
-    return tokens;
+    return {
+      ...user,
+      ...tokens,
+      password: undefined,
+    };
   }
 
   async logout(userId: number) {
