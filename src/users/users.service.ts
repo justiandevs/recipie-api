@@ -50,8 +50,6 @@ export class UsersService {
     updateUserDto: UpdateUserDto,
     identifier: string,
   ) {
-    console.log(updateUserDto.refreshToken);
-
     const object = {
       refreshToken: updateUserDto.refreshToken,
     };
@@ -62,9 +60,6 @@ export class UsersService {
       'EX',
       '604800',
     );
-    const testRes = await this.redis.get(`${id}-${identifier}`);
-
-    console.log(testRes);
   }
 
   async getRefreshToken(id: number, identifier: string) {
