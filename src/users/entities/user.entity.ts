@@ -15,9 +15,4 @@ export class User {
   @Column()
   @Exclude()
   public password: string;
-
-  // TODO: Implement one-to-many relation between User table and a specific refresh token table
-  @Column({ default: '' })
-  @Exclude()
-  public refreshToken: string;
 }

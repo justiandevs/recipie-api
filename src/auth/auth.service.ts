@@ -59,11 +59,13 @@ export class AuthService {
   }
 
   async logout(userId: number) {
-    return this.usersService.update(userId, { refreshToken: '' });
+    return this.usersService.updateRefreshToken(userId, { refreshToken: '' });
   }
 
   async updateRefreshToken(userId: number, refreshToken: string) {
-    await this.usersService.update(userId, { refreshToken: refreshToken });
+    await this.usersService.updateRefreshToken(userId, {
+      refreshToken: refreshToken,
+    });
   }
 
   async getTokens(userId: number, username: string) {
@@ -98,9 +100,12 @@ export class AuthService {
 
   async refreshTokens(userId: number, refreshToken: string) {
     const user = await this.usersService.findOneById(userId);
-    if (user === null || user.refreshToken === '')
+    if (
+      user === null ||
+      (await this.usersService.getRefreshToken(userId)) === ''
+    )
       throw new ForbiddenException('Access Denied');
-    if (refreshToken != user.refreshToken)
+    if (refreshToken != (await this.usersService.getRefreshToken(userId)))
       throw new ForbiddenException('Access Denied');
     const tokens = await this.getTokens(user.id!, user.name);
     await this.updateRefreshToken(user.id!, tokens.refreshToken);
