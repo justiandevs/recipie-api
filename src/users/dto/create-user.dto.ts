@@ -13,4 +13,5 @@ export class CreateUserDto {
   email: string;
 
   refreshToken: string;
+  identifier: string;
 }

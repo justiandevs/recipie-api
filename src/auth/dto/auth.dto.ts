@@ -8,4 +8,6 @@ export class AuthDto {
   @IsString()
   @Length(8, 64)
   password: string;
+
+  identifier: string;
 }

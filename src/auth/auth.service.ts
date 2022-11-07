@@ -32,7 +32,11 @@ export class AuthService {
     });
 
     const tokens = await this.getTokens(newUser.id!, newUser.name);
-    await this.updateRefreshToken(newUser.id!, tokens.refreshToken);
+    await this.updateRefreshToken(
+      newUser.id!,
+      tokens.refreshToken,
+      createUserDto.identifier,
+    );
     return {
       ...newUser,
       ...tokens,
@@ -50,7 +54,11 @@ export class AuthService {
     if (!passwordMatches)
       throw new BadRequestException('Credentials are invalid');
     const tokens = await this.getTokens(user.id!, user.name);
-    await this.updateRefreshToken(user.id!, tokens.refreshToken);
+    await this.updateRefreshToken(
+      user.id!,
+      tokens.refreshToken,
+      authDto.identifier,
+    );
     return {
       ...user,
       ...tokens,
@@ -58,14 +66,26 @@ export class AuthService {
     };
   }
 
-  async logout(userId: number) {
-    return this.usersService.updateRefreshToken(userId, { refreshToken: '' });
+  async logout(userId: number, identifier: string) {
+    return this.usersService.updateRefreshToken(
+      userId,
+      { refreshToken: '' },
+      identifier,
+    );
   }
 
-  async updateRefreshToken(userId: number, refreshToken: string) {
-    await this.usersService.updateRefreshToken(userId, {
-      refreshToken: refreshToken,
-    });
+  async updateRefreshToken(
+    userId: number,
+    refreshToken: string,
+    identifier: string,
+  ) {
+    await this.usersService.updateRefreshToken(
+      userId,
+      {
+        refreshToken: refreshToken,
+      },
+      identifier,
+    );
   }
 
   async getTokens(userId: number, username: string) {
@@ -98,17 +118,24 @@ export class AuthService {
     };
   }
 
-  async refreshTokens(userId: number, refreshToken: string) {
+  async refreshTokens(
+    userId: number,
+    refreshToken: string,
+    identifier: string,
+  ) {
     const user = await this.usersService.findOneById(userId);
     if (
       user === null ||
-      (await this.usersService.getRefreshToken(userId)) === ''
+      (await this.usersService.getRefreshToken(userId, identifier)) === ''
     )
       throw new ForbiddenException('Access Denied');
-    if (refreshToken != (await this.usersService.getRefreshToken(userId)))
+    if (
+      refreshToken !=
+      (await this.usersService.getRefreshToken(userId, identifier))
+    )
       throw new ForbiddenException('Access Denied');
     const tokens = await this.getTokens(user.id!, user.name);
-    await this.updateRefreshToken(user.id!, tokens.refreshToken);
+    await this.updateRefreshToken(user.id!, tokens.refreshToken, identifier);
     return tokens;
   }
 }

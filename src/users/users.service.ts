@@ -45,19 +45,33 @@ export class UsersService {
     });
   }
 
-  async updateRefreshToken(id: number, updateUserDto: UpdateUserDto) {
+  async updateRefreshToken(
+    id: number,
+    updateUserDto: UpdateUserDto,
+    identifier: string,
+  ) {
     console.log(updateUserDto.refreshToken);
 
+    const object = {
+      refreshToken: updateUserDto.refreshToken,
+    };
+
     await this.redis.set(
-      `${id}`,
-      `${updateUserDto.refreshToken}`,
+      `${id}-${identifier}`,
+      `${JSON.stringify(object)}`,
       'EX',
       '604800',
     );
+    const testRes = await this.redis.get(`${id}-${identifier}`);
+
+    console.log(testRes);
   }
 
-  async getRefreshToken(id: number) {
-    return await this.redis.get(`${id}`);
+  async getRefreshToken(id: number, identifier: string) {
+    const res = await this.redis.get(`${id}-${identifier}`);
+    if (res != null) {
+      return JSON.parse(res).refreshToken;
+    }
   }
 
   async remove(id: number) {

@@ -3,6 +3,7 @@ import {
   ClassSerializerInterceptor,
   Controller,
   Get,
+  Param,
   Post,
   Req,
   UseGuards,
@@ -33,7 +34,7 @@ export class AuthController {
   @UseGuards(AccessTokenGuard)
   @Get('logout')
   logout(@Req() req: LogoutRequest) {
-    this.authService.logout(req.user.sub);
+    this.authService.logout(req.user.sub, <string>req.query.identifier);
   }
 
   @UseGuards(RefreshTokenGuard)
@@ -41,6 +42,10 @@ export class AuthController {
   refreshTokens(@Req() req: LogoutRequest) {
     const userId = req.user.sub;
     const refreshToken = req.user.refreshToken;
-    return this.authService.refreshTokens(userId, refreshToken);
+    return this.authService.refreshTokens(
+      userId,
+      refreshToken,
+      <string>req.query.identifier,
+    );
   }
 }
