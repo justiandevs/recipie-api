@@ -46,7 +46,7 @@ export class AuthService {
 
   async signIn(authDto: AuthDto) {
     const user = await this.usersService.findOneByUsername(authDto.name);
-    if (user === null) throw new BadRequestException('User does not exist');
+    if (user === null) throw new BadRequestException('Credentials are invalid');
     const passwordMatches = await bcrypt.compare(
       authDto.password,
       user.password,
